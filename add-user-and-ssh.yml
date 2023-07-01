@@ -1,0 +1,10 @@
+---
+- name: Use add-user-ssh role playbook to create/edit user ssh authentication
+  hosts: all
+  user: root
+  become: yes
+
+  roles:
+    - role: add-ssh-user
+      user_name: "server-adm"
+      new_password: "srvadm310498010"

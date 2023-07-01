@@ -1,0 +1,27 @@
+# Copies the webserver files (index.php)
+---
+- name: Copy webserver files
+  hosts: all
+
+  vars:
+    target_dir: /app
+    source_file: files/index.php
+    target_file: /app/index.php
+    file_owner: server-adm
+
+  tasks:
+    - name: Change attributes of the directory
+      ansible.builtin.file:
+        path: "{{ target_dir }}"
+        state: directory
+        mode: '0774'
+        owner: "{{ file_owner }}"
+        group: "{{ file_owner }}"
+      become: yes
+
+
+    - name: Copy files
+      ansible.builtin.copy:
+        src: "{{ source_file }}"
+        dest: "{{ target_file }}"
+        mode: '0774'

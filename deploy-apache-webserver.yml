@@ -1,0 +1,10 @@
+---
+- name: Deploy apache2 webserver
+  hosts: php-server
+  become: true
+
+  roles:
+    - role: deploy-webserver
+      webserver_port: 8000
+      webserver_hostname: uploader
+      webserver_fqdn: uploader.test.com

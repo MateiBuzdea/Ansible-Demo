@@ -1,0 +1,9 @@
+version: "3.7"
+
+services:
+  test-server:
+    container_name: test-server
+    # grab Dockerfile from current dir
+    build:
+      context: ./
+    privileged: true

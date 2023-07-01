@@ -1,0 +1,49 @@
+# Starts/stops a script/command in the background
+# This one simulates a simple php development server
+---
+- name: Deploy php server
+  hosts: all
+
+  vars:
+    server_user: server-adm
+    server_dir: "/tmp"
+    server_port: 4444
+    server_cmd: "php -S 0.0.0.0:{{ server_port }}"
+
+
+  tasks:
+    - name: Start php server
+      tags:
+        - start-server
+      become: yes
+      become_user: "{{ server_user }}"
+      ansible.builtin.shell:
+        chdir: "{{ server_dir }}"
+        # Runs command in background by detaching from stdin/stdout
+        cmd: "nohup {{ server_cmd }} </dev/null >/dev/null 2>&1 &"
+
+
+    - name: Getting PID of the started server
+      tags:
+        - getpid-server
+        - stop-server
+      ansible.builtin.shell:
+        # getpid -fx matches exact name
+        cmd: "pgrep -fx '{{ server_cmd }}'"
+      register: server_pid
+
+    - name: Debug
+      tags:
+        - getpid-server
+        - stop-server
+      debug:
+        var: server_pid
+
+
+    - name: Stop php server
+      tags:
+        - stop-server
+      become: yes
+      become_user: "{{ server_user }}"
+      ansible.builtin.shell:
+        cmd: "kill -9 {{ server_pid.stdout }}"

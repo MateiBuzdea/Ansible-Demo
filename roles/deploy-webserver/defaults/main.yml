@@ -1,0 +1,4 @@
+---
+# defaults file for deploy-webserver
+webserver_port: 8888
+webserver_hostname: html

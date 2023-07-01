@@ -1,0 +1,10 @@
+[Unit]
+Description=Server Cleanup Service
+
+[Service]
+User=root
+ExecStart=/cleanup.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

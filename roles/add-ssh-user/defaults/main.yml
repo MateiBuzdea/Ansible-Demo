@@ -1,0 +1,5 @@
+---
+# defaults file for add-ssh-user
+# generate random value for password
+user_name: "root"
+new_password: lookup('community.general.random_string', length=10)

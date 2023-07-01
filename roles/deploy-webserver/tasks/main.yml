@@ -1,0 +1,50 @@
+---
+# tasks file for deploy-webserver
+# install apache2 webserver
+
+- name: Install apache2
+  apt:
+    name: apache2
+    state: latest
+
+
+- name: Start and enable apache2 service
+  service:
+    name: apache2
+    state: started
+    enabled: true
+
+
+- name: Create vhost directory
+  file:
+    path: "/var/www/{{ webserver_hostname }}"
+    state: directory
+    recurse: true
+
+
+- name: Install ports config file
+  template:
+    src: ports.conf.j2
+    dest: /etc/apache2/ports.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart the apache2 service
+
+
+- name: Install sites-enabled config file
+  template:
+    src: vhosts.conf.j2
+    dest: /etc/apache2/sites-available/000-default.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart the apache2 service
+
+
+- name: Install contents from local file
+  copy:
+    src: index.php
+    dest: "/var/www/{{ webserver_hostname }}/"
+  changed_when: true
+  notify: Restart the apache2 service

@@ -1,0 +1,27 @@
+---
+# Task file for add-ssh-user role
+# Adds user with the specified password and copies the public ssh key to authorized_keys
+
+- name: Change user password
+  become: yes
+  become_method: sudo
+  ansible.builtin.user:
+    name: "{{ user_name }}"
+    state: present
+    password: "{{ new_password | password_hash('sha512') }}"
+
+
+- name: Create .ssh directory if not exists
+  file:
+    path: "{{ user_ssh_dir }}"
+    owner: "{{ user_name }}"
+    state: directory
+    recurse: true
+
+
+- name: Add user ssh key authentication
+  ansible.builtin.copy:
+    src: "{{ my_ssh_key }}"
+    dest: "{{ user_ssh_dir }}/authorized_keys"
+    mode: '0644'
+    owner: "{{ user_name }}"

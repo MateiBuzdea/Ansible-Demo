@@ -1,0 +1,7 @@
+---
+# vars file for add-ssh-user
+# If user is root, do not go in /home
+
+user_home_dir: "{{ '/root' if user_name == 'root' else '/home/' + user_name }}"
+user_ssh_dir: "{{ user_home_dir }}/.ssh"
+my_ssh_key: "~/.ssh/id_ed25519.pub"

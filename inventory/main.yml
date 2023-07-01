@@ -1,0 +1,20 @@
+all:
+    children:
+        webservers:
+            hosts:
+                # This is our example php server
+                # Get its ip using `docker inspect ansible_test-server`
+                php-server:
+                    ansible_host: 172.18.0.2
+                    ansible_port: 22
+
+                    ansible_user: root
+                    ansible_ssh_pass: root43509281236
+                    # ansible_ssh_private_key_file: ~/.ssh/id_rsa
+
+    vars:
+        # Default shh credentials; disable strict host checking
+        ansible_connection: ssh
+        ansible_ssh_common_args: -o GlobalKnownHostsFile=/dev/null -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+        ansible_user: root
+        ansible_ssh_pass: root

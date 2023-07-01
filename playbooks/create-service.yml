@@ -1,0 +1,41 @@
+# Creates a service that executes a script when loaded
+# Service creation does not work for docker container
+---
+- name: Create service
+  hosts: all
+
+  vars:
+    service_name: cleanup
+    script_file: cleanup.sh
+
+  tasks:
+    - name: Copy the service file
+      ansible.builtin.copy:
+        src: "files/{{ service_name }}.service"
+        dest: "/etc/systemd/system/{{ service_name }}.service"
+        mode: '0755'
+      become: yes
+
+
+    - name: Copy the script
+      ansible.builtin.copy:
+        src: "files/{{ script_file }}"
+        dest: "/{{ script_file }}"
+        mode: '0774'
+      become: yes
+
+
+    - name: Reload daemon
+      shell: "systemctl daemon-reload"
+      become: yes
+      become_method: sudo
+
+
+    - name: Start the cleanup service
+      tags:
+        - start-service
+      ansible.builtin.service:
+        name: "{{ service_name }}"
+        state: started
+      become: yes
+      become_method: sudo

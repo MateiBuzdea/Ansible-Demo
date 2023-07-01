@@ -1,0 +1,18 @@
+# Creates user with a password
+---
+- name: Manage user account
+  hosts: all
+
+  vars:
+    target_user: "server-adm"
+    new_password: "srvadm310498010"
+
+
+  tasks:
+    - name: Change user password
+      become: yes
+      become_method: sudo
+      ansible.builtin.user:
+        name: "{{ target_user }}"
+        state: present
+        password: "{{ new_password | password_hash('sha512') }}"
